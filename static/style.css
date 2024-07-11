@@ -1,0 +1,295 @@
+body {
+    background: linear-gradient(45deg, #49a09d, #5f2c82);
+    background-size: cover;
+    background-repeat: no-repeat;
+    background-attachment: fixed;
+    color: white;
+    margin: 0;
+    font-family: Arial, sans-serif;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+}
+.wrapper {
+    max-width: 600px;
+    padding: 20px;
+    background: rgba(0, 0, 0, 0.5);
+    border-radius: 10px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+    text-align: center;
+    margin-bottom: 20px;
+}
+.wrapper header {
+    font-size: 24px;
+    margin-bottom: 20px;
+}
+#uploadForm {
+    padding: 20px;
+    border: 2px dashed #3498db;
+    border-radius: 10px;
+    background: rgba(255, 255, 255, 0.1);
+    margin-bottom: 20px;
+}
+.file-input {
+    display: none;
+}
+.upload-icon {
+    font-size: 60px;
+    margin-bottom: 10px;
+    color: #3498db;
+}
+.upload-text {
+    font-size: 18px;
+    margin-bottom: 20px;
+    color: rgb(202, 202, 202);
+}
+.upload-button {
+    display: inline-block;
+    padding: 10px 20px;
+    background-color: #3498db;
+    color: white;
+    border: none;
+    width: 200px;
+    border-radius: 20px;
+    cursor: pointer;
+    font-size: 16px;
+    transition: background-color 0.3s ease;
+    pointer-events: none; /* Initially disable pointer events */
+    opacity: 0.5; /* Initially reduce opacity */
+}
+.upload-button.active {
+    pointer-events: auto; /* Enable pointer events when active */
+    opacity: 1; /* Full opacity when active */
+}
+.upload-button:hover {
+    background-color: #2980b9;
+}
+.progress-area {
+    display: none;
+    margin-top: 20px;
+    background-color: #ccc;
+    border-radius: 10px;
+    height: 20px;
+    overflow: hidden;
+}
+.progress-bar {
+    height: 100%;
+    width: 0;
+    background-color: #4caf50;
+}
+.uploaded-area {
+    margin-top: 20px;
+    text-align: left;
+}
+.uploaded-file {
+    background-color: rgba(255, 255, 255, 0.2);
+    padding: 10px;
+    margin-bottom: 10px;
+    border-radius: 5px;
+}
+.uploaded-file p {
+    margin: 0;
+    color: white;
+}
+.user-management {
+    margin-top: 20px;
+}
+.user-management table {
+    width: 100%;
+    margin-top: 30px;
+}
+.user-management th, .user-management td {
+    padding: 8px;
+    text-align: center;
+}
+.user-management th {
+    background-color: #333;
+}
+.user-management td {
+    background-color: #444;
+}
+.user-management button {
+    padding: 5px 10px;
+    margin: 2px;
+    cursor: pointer;
+    border: none;
+    border-radius: 5px;
+}
+.user-management .edit {
+    background-color: #f39c12;
+    color: white;
+}
+
+.user-management .edit:hover {
+    background-color: #ffbd52;
+}
+
+.user-management .delete {
+    background-color: #e74c3c;
+    color: white;
+}
+.user-management .delete:hover {
+    background-color: #ff8678;
+}
+
+
+.user-management .toggle {
+    cursor: pointer;
+}
+.modal {
+    display: none;
+    position: fixed;
+    z-index: 1;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    overflow: auto;
+    background-color: rgba(0, 0, 0, 0.4);
+}
+.modal-content {
+    background-color: #333;
+    margin: 15% auto;
+    padding: 20px;
+    border: 1px solid #888;
+    width: 80%;
+    max-width: 400px;
+    border-radius: 10px;
+}
+.modal-content input {
+    width: calc(100% - 22px);
+    padding: 10px;
+    margin: 5px 0;
+    border-radius: 5px;
+    border: none;
+}
+.modal-content button {
+    padding: 10px 20px;
+    background-color: #3498db;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+}
+.modal-content button:hover {
+    background-color: #2980b9;
+}
+.close {
+    color: white;
+    float: right;
+    font-size: 28px;
+    font-weight: bold;
+}
+.close:hover,
+.close:focus {
+    color: #bbb;
+    text-decoration: none;
+    cursor: pointer;
+}
+
+.fancy-button {
+    background-color: #4da0ff;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+    font-size: 16px;
+    margin-top: 20px;
+    width: 100px;
+    max-width: 100px;
+    height: 30px;
+    max-height: 30px;
+    cursor: pointer;
+    border-radius: 5px;
+    transition: background-color 0.3s, box-shadow 0.3s;
+}
+
+.fancy-button:hover {
+    background-color: #9d9eff;
+}
+
+h2{
+    margin-top: 50px;
+}
+
+/* Toggle switch styles */
+.switch {
+    position: relative;
+    display: inline-block;
+    width: 36px;
+    height: 20px;
+  }
+  
+  .switch input {
+    opacity: 0;
+    width: 0;
+    height: 0;
+  }
+  
+  .slider {
+    position: absolute;
+    cursor: pointer;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: #ccc;
+    transition: .4s;
+    border-radius: 20px;
+  }
+  
+  .slider:before {
+    position: absolute;
+    content: "";
+    height: 14px;
+    width: 14px;
+    left: 3px;
+    bottom: 3px;
+    background-color: white;
+    transition: .4s;
+    border-radius: 50%;
+  }
+  
+  input:checked + .slider {
+    background-color: #4CAF50;
+  }
+  
+  input:checked + .slider:before {
+    transform: translateX(16px);
+  }
+  
+  .slider.round {
+    border-radius: 34px;
+  }
+
+  .modal-content {
+    background-color: #333;
+    margin: 15% auto;
+    padding: 20px;
+    border: 1px solid #888;
+    width: 80%;
+    max-width: 400px;
+    border-radius: 10px;
+    text-align: center;
+  }
+  
+  .modal-content button.center-button {
+    display: block;
+    margin: 20px auto; /* Center align the button */
+  }
+  
+  .no-users {
+    background-color: #333;
+    height: 50px;
+    max-height: 50px;
+    margin-top: 20px;
+    text-align: center; /* Centers text horizontally */
+    display: flex; /* Use flexbox for centering vertically */
+    justify-content: center; /* Centers content horizontally */
+    align-items: center; /* Centers content vertically */
+    color: #444;;
+}

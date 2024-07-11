@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>MARK-1 CMS</title>
+  <link rel="shortcut icon" type="image/x-icon" href="{{ url_for('static', filename='favicon.ico') }}">
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css"/>
+</head>
+<body>
+  <div class="wrapper">
+    <header>Upload Excel File</header>
+    <form id="uploadForm" action="/upload" method="post" enctype="multipart/form-data">
+      <input class="file-input" type="file" name="file" id="fileInput" onchange="checkFile()">
+      <label for="fileInput">
+        <i class="fas fa-cloud-upload-alt upload-icon"></i>
+        <p class="upload-text">Browse Excel File to Upload</p>
+      </label>
+      <button type="submit" class="upload-button" id="uploadButton" disabled>Upload</button>
+    </form>
+    <div class="user-management">
+      <h2>Users List</h2>
+      <button class="fancy-button" onclick="openAddUserModal()">Add User</button>
+      <a href="{{ url_for('logout') }}">Logout</a>
+
+      {% if users %}
+        <table>
+          <thead>
+            <tr>
+              <th>No.</th>
+              <th>Name</th>
+              <th>Account</th>
+              <th>Status</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for user_id, user in users.items() %}
+              <tr>
+                <td>{{ loop.index }}</td>
+                <td>{{ user.name }}</td>
+                <td>{{ user.account }}</td>
+                <td>
+                  <label class="switch">
+                    <input type="checkbox" class="toggle" data-id="{{ user_id }}" {% if user.status %}checked{% endif %}>
+                    <span class="slider round"></span>
+                  </label>
+                </td>
+                <td>
+                  <button class="edit" data-id="{{ user_id }}" data-name="{{ user.name }}" data-account="{{ user.account }}" data-status="{{ user.status }}">Edit</button>
+                  <button class="delete" data-id="{{ user_id }}">Delete</button>
+                </td>
+              </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      {% else %}
+        <p class="no-users">No users found</p>
+      {% endif %}
+    </div>
+  </div>
+
+  <!-- Modal for adding a new user -->
+  <div id="addUserModal" class="modal">
+    <div class="modal-content">
+      <span class="close" onclick="closeAddUserModal()">&times;</span>
+      <h2>Add User</h2>
+      <form id="addUserForm">
+        <input type="text" name="name" placeholder="Name" required>
+        <input type="text" name="account" placeholder="Account Number" required>
+        <button type="submit" class="center-button">Add User</button>
+      </form>
+    </div>
+  </div>
+
+  <!-- Modal for editing user details -->
+  <div id="editUserModal" class="modal">
+    <div class="modal-content">
+      <span class="close" onclick="closeEditUserModal()">&times;</span>
+      <h2>Edit User</h2>
+      <form id="editUserForm" method="post">
+        <input type="text" name="name" id="editName" placeholder="Name" required>
+        <input type="text" name="account" id="editAccount" placeholder="Account Number" required>
+        <label for="editStatus">Status:</label>
+        <input type="checkbox" name="status" id="editStatus">
+        <button type="submit">Update User</button>
+      </form>
+    </div>
+  </div>
+
+  <script>
+    function checkFile() {
+      var fileInput = document.getElementById('fileInput');
+      var uploadButton = document.getElementById('uploadButton');
+      uploadButton.classList.remove('active');
+      uploadButton.disabled = true;
+
+      if (fileInput.files.length > 0) {
+        var file = fileInput.files[0];
+        var fileName = file.name;
+        var fileType = fileName.slice((fileName.lastIndexOf(".") - 1 >>> 0) + 2).toLowerCase();
+        if (fileType === 'xlsx') {
+          uploadButton.classList.add('active');
+          uploadButton.disabled = false;
+        } else {
+          alert('Please select a valid Excel file (xlsx format).');
+          fileInput.value = '';
+        }
+      }
+    }
+
+    function openAddUserModal() {
+      document.getElementById('addUserModal').style.display = 'block';
+    }
+
+    function closeAddUserModal() {
+      document.getElementById('addUserModal').style.display = 'none';
+    }
+
+    function openEditUserModal(userId, userName, userAccount, userStatus) {
+      document.getElementById('editName').value = userName;
+      document.getElementById('editAccount').value = userAccount;
+      document.getElementById('editStatus').checked = userStatus === 'True';
+      document.getElementById('editUserForm').action = `/update_user/${userId}`;
+      document.getElementById('editUserModal').style.display = 'block';
+    }
+
+    function closeEditUserModal() {
+      document.getElementById('editUserModal').style.display = 'none';
+    }
+
+    document.querySelectorAll('.edit').forEach(button => {
+      button.addEventListener('click', function() {
+        const userId = this.getAttribute('data-id');
+        const userName = this.getAttribute('data-name');
+        const userAccount = this.getAttribute('data-account');
+        const userStatus = this.getAttribute('data-status');
+        openEditUserModal(userId, userName, userAccount, userStatus);
+      });
+    });
+
+    document.querySelectorAll('.toggle').forEach(toggle => {
+      toggle.addEventListener('change', function() {
+        const userId = this.getAttribute('data-id');
+        const status = this.checked;
+        fetch(`/update_status/${userId}`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({ status: status })
+        });
+      });
+    });
+
+    document.querySelectorAll('.delete').forEach(button => {
+      button.addEventListener('click', function() {
+        const userId = this.getAttribute('data-id');
+        if (confirm('Are you sure you want to delete this user?')) {
+          fetch(`/delete_user/${userId}`, {
+            method: 'POST'
+          }).then(() => {
+            location.reload();
+          });
+        }
+      });
+    });
+
+    document.getElementById('addUserForm').addEventListener('submit', function(event) {
+      event.preventDefault(); // Prevent the form from submitting normally
+      const formData = new FormData(this);
+      fetch('/add_user', {
+        method: 'POST',
+        body: formData
+      })
+      .then(response => response.text())
+      .then(result => {
+        if (result === 'exists') {
+          alert('User already exists!');
+        } else if (result === 'success') {
+          location.reload(); // Reload the page to see the new user in the list
+        }
+      })
+      .catch(error => console.error('Error:', error));
+    });
+
+    function logout() {
+      fetch('/logout', {
+        method: 'GET'
+      }).then(() => {
+        window.location.href = '/login';
+      }).catch((error) => {
+        console.error('Error logging out:', error);
+      });
+    }
+  </script>
+</body>
+</html>
