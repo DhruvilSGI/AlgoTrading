@@ -224,5 +224,4 @@ def update_accounts():
 
     return redirect(url_for('result', accounts_string=accounts_string, message=message))
 
-if __name__ == '__main__':
-    app.run(debug=True)
+
