@@ -224,4 +224,3 @@ def update_accounts():
 
     return redirect(url_for('result', accounts_string=accounts_string, message=message))
 
-
