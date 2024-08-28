@@ -5,103 +5,86 @@
     <style>
         body {
             background: linear-gradient(45deg, #49a09d, #5f2c82);
-            font-family: sans-serif;
-            font-weight: 100;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
+            font-family: Arial, sans-serif;
             color: #fff;
-        }
-
-        .content {
             text-align: center;
-            width: 90%; /* Same width as table */
-            max-width: 1200px; /* Optional maximum width */
-            display: flex;
-            flex-direction: column;
-            align-items: center;
+            padding: 20px;
         }
 
         table {
-            width: 100%; /* Make table take full width of container */
+            width: 100%;
             border-collapse: collapse;
-            overflow: hidden;
-            box-shadow: 0 0 20px rgba(0,0,0,0.1);
-            margin: 20px 0;
+            margin: 20px auto;
         }
 
         th, td {
-            padding: 15px;
-            background-color: rgba(255,255,255,0.2);
-            color: #fff;
+            padding: 10px;
+            border: 1px solid #fff;
         }
 
         th {
-            text-align: center;
-        }
-
-        thead th {
             background-color: #55608f;
         }
 
-        h1, h2, p, a {
-            color: #fff;
-            margin-top: 20px 0;
+        tr:nth-child(even) {
+            background-color: rgba(255,255,255,0.1);
         }
 
-        h2[name="heds"] {
-            margin-top: 20px;
-            margin-bottom: 15px;
+        tr:nth-child(odd) {
+            background-color: rgba(255,255,255,0.2);
         }
-        
+
         .button {
             display: inline-block;
             padding: 10px 20px;
             background-color: #55608f;
             color: white;
-            text-align: center;
             text-decoration: none;
-            margin-bottom: 10px;
-            font-size: 16px;
-            border-radius: 10px; /* Adjust the radius for rounded corners */
-            cursor: pointer;
-            border: none;
+            border-radius: 5px;
+            margin-top: 20px;
         }
 
         .button:hover {
             background-color: rgb(47, 43, 90);
         }
-
     </style>
 </head>
 <body>
-    <div class="content">
-        <h2 name="heds" >Excel Data</h2>
-        <table>
-            <thead>
-                <tr>
-                    {% for header in headers %}
-                    <th>{{ header }}</th>
-                    {% endfor %}
-                </tr>
-            </thead>
-            <tbody>
-                {% for row in rows %}
-                <tr>
-                    {% for cell in row %}
-                    <td>{{ cell }}</td>
-                    {% endfor %}
-                </tr>
+    <h1>{{ message }}</h1>
+    <table id="data-table">
+        <thead>
+            <tr>
+                {% for header in headers %}
+                <th>{{ header }}</th>
                 {% endfor %}
-            </tbody>
-        </table>
-        <!-- <h2>Extracted Data From Excel</h2>
-        <p>{{ data }}</p> -->
-        <h1>{{ message }}</h1>
-        <br>
-        <a href="/" class="button">Go to Home Page</a>
-        <br>
-        <P></P>
-    </div>
+            </tr>
+        </thead>
+        <tbody>
+            {% for row in rows %}
+            <tr>
+                {% for cell in row %}
+                <td>{{ cell }}</td>
+                {% endfor %}
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    <a href="/" class="button">Go to Home Page</a>
+
+    <script>
+        // Function to format numbers to 6 decimal places
+        function formatNumber(value) {
+            // Check if the value is a number
+            if (!isNaN(parseFloat(value)) && isFinite(value)) {
+                return parseFloat(value).toFixed(6);
+            }
+            return value; // Return as-is if it's not a number
+        }
+
+        // Apply formatting to all table cells
+        document.querySelectorAll('#data-table td').forEach(cell => {
+            cell.textContent = formatNumber(cell.textContent);
+        });
+    </script>
 </body>
 </html>

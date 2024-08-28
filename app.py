@@ -82,6 +82,28 @@ def logout():
     session.pop('user_id', None)
     return redirect(url_for('login'))
 
+def format_float(value, decimals=5):
+    """Format the floating-point number to a fixed number of decimal places, removing trailing zeros."""
+    try:
+        if isinstance(value, float):
+            formatted_value = f"{value:.{decimals}f}".rstrip('0').rstrip('.')
+            return formatted_value
+        return str(value)
+    except (ValueError, TypeError):
+        return str(value)
+
+
+def format_value(value):
+    try:
+        # Attempt to convert the value to a float
+        numeric_value = float(value)
+        # Format to 6 decimal places if successful
+        return f"{numeric_value:.6f}"
+    except (ValueError, TypeError):
+        # Return the value unchanged if it's not a number
+        return str(value)
+
+
 @app.route('/upload', methods=['POST'])
 def upload_file():
     if 'user_id' not in session:
@@ -116,13 +138,16 @@ def upload_file():
                 cell_value = sheet[column_letter + str(row)].value
                 if cell_value is None:
                     cell_value = ""
-                column_data.append(cell_value)
-            exceldata[column_letter] = column_data
+                formatted_value = format_value(cell_value)
+                column_data.append(formatted_value)
+
+            exceldata[column_letter] = column_data    
 
         final_string = ""
         for column in columns_to_extract:
-            column_data = ", ".join(str(value) for value in exceldata[column])
-            final_string += f"{column_data}/"
+            column_data = ", ".join(str(value) for value in exceldata[column]) 
+            final_string += f"{column_data}/"    
+
 
         final_string = final_string.rstrip('/')
         wb.close()
